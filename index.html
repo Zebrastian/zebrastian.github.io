@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title></title>
+        <title>WCAG 2.0 Compliance Checker</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
-        <div class="container-fluid">
+        <div id="mainDiv" class="container-fluid">
             <h1 class="display-4" style="text-align: center">WCAG 2.0 Contrast Compliance Checker</h1>
             <div class="row">
                 <div class="col-6">
@@ -27,69 +27,130 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-3">
-                    <h3 style="float: right">Input Color</h3>
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-4">
+                            <h3 style="float: right">Input Color</h3>
+                        </div>
+                        <div class="col-4">
+                            <input id="backgroundInput" type="text" class="form-control" placeholder="Background Color" style="float: right">
+                        </div>
+                        <div class="col-4">
+                            <input id="textInput" type="text" class="form-control" placeholder="Text Color">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <h3 style="float: right">Lighten/Darken</h3>
+                        </div>
+                        <div class="col-4">
+                            <input id="contrastSlider1" class="slider" type="range" min="-10" max="10" value="0">
+                        </div>
+                        <div class="col-4">
+                            <input id="contrastSlider2" class="slider" type="range" min="-10" max="10" value="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h3 style="float: right">Large Text</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h3 style="float: right">Normal Text</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div id="textbg1" class="col-12 colorDisplay">
+                                    <h4 id="text1" style="text-align: center">The quick brown fox jumps over the lazy dog.</h4>
+                                </div>
+                                <div id="textbg3" class="col-12 colorDisplay">
+                                    <p id="text3" style="text-align: center">The quick brown fox jumps over the lazy dog.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div id="textbg2" class="col-12 colorDisplay">
+                                    <h4 id="text2" style="text-align: center">The quick brown fox jumps over the lazy dog.</h4>
+                                </div>
+                                <div id="textbg4" class="col-12 colorDisplay">
+                                    <p id="text4" style="text-align: center">The quick brown fox jumps over the lazy dog.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4"></div>
+                        <div class="col-4">
+                            <div class="row">
+                                <table class="col-6 table">
+                                    <tr>
+                                        <th>Name</th>
+                                        <td id="name1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Luminance</th>
+                                        <td id="luminance1"></td>
+                                    </tr>
+                                </table>
+                                <table class="col-6 table">
+                                    <tr>
+                                        <th>Hex</th>
+                                        <td id="hex1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>RGB</th>
+                                        <td id="rgb1"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <table class="col-6 table">
+                                    <tr>
+                                        <th>Name</th>
+                                        <td id="name2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Luminance</th>
+                                        <td id="luminance2"></td>
+                                    </tr>
+                                </table>
+                                <table class="col-6 table">
+                                    <tr>
+                                        <th>Hex</th>
+                                        <td id="hex2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>RGB</th>
+                                        <td id="rgb2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-3">
-                    <input id="backgroundInput" type="text" class="form-control" placeholder="Background Color" style="float: right">
-                </div>
-                <div class="col-3">
-                    <input id="textInput" type="text" class="form-control" placeholder="Text Color">
-                </div>
-                <div class="col-3">
-                    <h3>Ratio</h3>
+                    <div class="col-12">
+                        <h3 id="contrastRatio"></h3>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-3">
-                    <h3 style="float: right">Lighten/Darken</h3>
-                </div>
-                <div class="col-3">
-                    <input id="contrastSlider1" class="slider" type="range" min="-10" max="10" value="0">
-                </div>
-                <div class="col-3">
-                    <input id="contrastSlider2" class="slider" type="range" min="-10" max="10" value="0">
-                </div>
-                <div class="col-3">
-                    <h3 id="newContrastRatio">New Contrast Ratio:</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <h3 style="float: right">Large Text</h3>
-                </div>
-                <div id="textbg1" class="col-3 colorDisplay">
-                    <h4 id="text1" style="text-align: center">The quick brown fox jumps over the lazy dog.</h4>
-                </div>
-                <div id="textbg2" class="col-3 colorDisplay">
-                    <h4 id="text2" style="text-align: center">The quick brown fox jumps over the lazy dog.</h4>
-                </div>
-                <div class="col-3">
-                    <h3>WCAG Stuff</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <h3 style="float: right">Normal Text</h3>
-                </div>
-                <div id="textbg3" class="col-3 colorDisplay">
-                    <p id="text3" style="text-align: center">The quick brown fox jumps over the lazy dog.</p>
-                </div>
-                <div id="textbg4" class="col-3 colorDisplay">
-                    <p id="text4" style="text-align: center">The quick brown fox jumps over the lazy dog.</p>
-                </div>
-                <div class="col-3">
-                    <h3>WCAG Stuff</h3>
-                </div>
+            <div class="container-fluid" id="contrastDiv">
+
+                <h2 id="backgroundLum"></h2>
+
+                <h2 id="textLum"></h2>
+                <h1 id="textHeader"></h1>
             </div>
         </div>
-        <div class="container-fluid" id="contrastDiv">
 
-            <h2 id="backgroundLum"></h2>
-
-            <h2 id="textLum"></h2>
-            <h1 id="textHeader"></h1>
-        </div>
 
         <script src="js/vendor/modernizr-3.5.0.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
