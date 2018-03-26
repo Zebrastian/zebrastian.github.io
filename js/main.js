@@ -116,11 +116,24 @@ function calcContrastRatio(color1, color2) {
     return Math.round((lum1 >= lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05)) * 100) / 100;
 }
 
+function init() {
+    lightnessFactor1 = 0;
+    lightnessFactor2 = 0;
+}
+
+init();
+
+document.getElementById('contrastSlider1').addEventListener('input', function(){
+    lightnessFactor1 = 0.1 * document.getElementById('contrastSlider1').value;
+});
+
+document.getElementById('contrastSlider2').addEventListener('input', function(){
+    lightnessFactor2 = 0.1 * document.getElementById('contrastSlider2').value;
+});
+
 document.getElementById('mainDiv').addEventListener('input', function(){
     color1 = shadeColor(colorNameToHex(document.getElementById('backgroundInput').value), lightnessFactor1);
     color2 = shadeColor(colorNameToHex(document.getElementById('textInput').value), lightnessFactor2);
-    lightnessFactor1 = 0.1 * document.getElementById('contrastSlider1').value;
-    lightnessFactor2 = 0.1 * document.getElementById('contrastSlider2').value;
     contrastRatio = calcContrastRatio(color1, color2);
     document.getElementById('textbg1').style.backgroundColor = color1;
     document.getElementById('textbg1').style.color = color2;
