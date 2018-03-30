@@ -138,6 +138,14 @@ document.getElementById('contrastSlider2').addEventListener('input', function(){
     lightnessFactor2 = translate(document.getElementById('contrastSlider2').value, -127, 127, -1, 1);
 });
 
+document.getElementById('backgroundInput').addEventListener('input', function(){
+    document.getElementById('contrastSlider1').value = 0;
+});
+
+document.getElementById('contrastSlider2').addEventListener('input', function(){
+    document.getElementById('contrastSlider2').value = 0;
+});
+
 document.getElementById('mainDiv').addEventListener('input', function(){
     color1 = shadeColor(colorNameToHex(document.getElementById('backgroundInput').value), lightnessFactor1);
     color2 = shadeColor(colorNameToHex(document.getElementById('textInput').value), lightnessFactor2);
