@@ -131,6 +131,37 @@ textarea {
     cursor: pointer;
 }
 
+#textbg1, #textbg2 {
+    padding-top: 20px;
+}
+
+#textbg3, #textbg4 {
+    padding-bottom: 20px;
+}
+
+#largeAA, #largeAAA, #normalAA, #normalAAA {
+    color: white;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+}
+
+#largeAA {
+    border-radius: 50% 0 0 0;
+}
+
+#largeAAA {
+    border-radius: 0 50% 0 0;
+}
+
+#normalAA {
+    border-radius: 0 0 0 50%;
+}
+
+#normalAAA {
+    border-radius: 0 0 50% 0;
+}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */

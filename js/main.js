@@ -11,6 +11,13 @@ function translate(value, leftMin, leftMax, rightMin, rightMax) {
     return rightMin + valueScaled * rightSpan;
 }
 
+function wcagCompliant(ratio, level, size) {
+    if(ratio >= 4.5 && ((level === "AA" && size === "normal") || (level === "AAA" && size === "large"))) return ["Pass","green"];
+    else if(ratio >= 7 && level === "AAA" && size === "normal") return ["Pass","green"];
+    else if(ratio >= 3 &&level === "AA" && size === "large") return ["Pass","green"];
+    else return ["Fail","red"];
+}
+
 function shadeColor(color, percent) {
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
@@ -172,4 +179,13 @@ document.getElementById('mainDiv').addEventListener('input', function(){
     document.getElementById('rgb2').innerHTML = hexToRgb(colorNameToHex(color2));
 
     document.getElementById('contrastRatio').innerHTML = "Contrast ratio: " + contrastRatio;
+
+    document.getElementById('largeAA').innerHTML = wcagCompliant(contrastRatio, "AA", "large")[0];
+    document.getElementById('largeAA').style.backgroundColor = wcagCompliant(contrastRatio, "AA", "large")[1];
+    document.getElementById('largeAAA').innerHTML = wcagCompliant(contrastRatio, "AAA", "large")[0];
+    document.getElementById('largeAAA').style.backgroundColor = wcagCompliant(contrastRatio, "AAA", "large")[1];
+    document.getElementById('normalAA').innerHTML = wcagCompliant(contrastRatio, "AA", "normal")[0];
+    document.getElementById('normalAA').style.backgroundColor = wcagCompliant(contrastRatio, "AA", "normal")[1];
+    document.getElementById('normalAAA').innerHTML = wcagCompliant(contrastRatio, "AAA", "normal")[0];
+    document.getElementById('normalAAA').style.backgroundColor = wcagCompliant(contrastRatio, "AAA", "normal")[1];
 });
