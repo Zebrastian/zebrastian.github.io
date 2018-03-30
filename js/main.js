@@ -4,6 +4,13 @@ var lightnessFactor1;
 var lightnessFactor2;
 var contrastRatio;
 
+function translate(value, leftMin, leftMax, rightMin, rightMax) {
+    var leftSpan = leftMax - leftMin;
+    var rightSpan = rightMax - rightMin;
+    var valueScaled = (value - leftMin) / leftSpan;
+    return rightMin + valueScaled * rightSpan;
+}
+
 function shadeColor(color, percent) {
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
@@ -124,11 +131,11 @@ function init() {
 init();
 
 document.getElementById('contrastSlider1').addEventListener('input', function(){
-    lightnessFactor1 = 0.1 * document.getElementById('contrastSlider1').value;
+    lightnessFactor1 = translate(document.getElementById('contrastSlider1').value, -127, 127, -1, 1);
 });
 
 document.getElementById('contrastSlider2').addEventListener('input', function(){
-    lightnessFactor2 = 0.1 * document.getElementById('contrastSlider2').value;
+    lightnessFactor2 = translate(document.getElementById('contrastSlider2').value, -127, 127, -1, 1);
 });
 
 document.getElementById('mainDiv').addEventListener('input', function(){
