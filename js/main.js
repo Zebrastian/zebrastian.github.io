@@ -18,6 +18,14 @@ function wcagCompliant(ratio, level, size) {
     else return ["Fail","red"];
 }
 
+function makeCompliant(color1, color2) {
+    while(calcContrastRatio(contrastRatio(color1, color2) < 4.5)) {
+        lightnessFactor1 -= 0.01;
+        console.log(lightnessFactor1);
+        makeCompliant(color1, color2);
+    }
+}
+
 function shadeColor(color, percent) {
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
@@ -55,7 +63,7 @@ function colorNameToHex(color) {
         "slategray":"#708090","snow":"#fffafa","springgreen":"#00ff7f","steelblue":"#4682b4","tan":"#d2b48c",
         "teal":"#008080","thistle":"#d8bfd8","tomato":"#ff6347","turquoise":"#40e0d0","violet":"#ee82ee",
         "wheat":"#f5deb3","white":"#ffffff","whitesmoke":"#f5f5f5","yellow":"#ffff00","yellowgreen":"#9acd32"};
-    if (typeof colors[color.toLowerCase()] != 'undefined') return colors[color.toLowerCase()];
+    if (typeof colors[color.toLowerCase()] !== 'undefined') return colors[color.toLowerCase()];
     else if(color.startsWith('#')) return color;
     else if(color.includes(',')) return rgbToHex(color);
     else return '#' + color;
@@ -94,7 +102,7 @@ function hexToColorName(color) {
         "#008080":"teal","#d8bfd8":"thistle","#ff6347":"tomato","#40e0d0":"turquoise","#ee82ee":"violet",
         "#f5deb3":"wheat","#ffffff":"white","#f5f5f5":"whitesmoke","#ffff00":"yellow","#9acd32":"yellowgreen"};
     if(!color.startsWith('#')) color = '#' + color;
-    if (typeof colors[color.toLowerCase()] != 'undefined') return colors[color.toLowerCase()];
+    if (typeof colors[color.toLowerCase()] !== 'undefined') return colors[color.toLowerCase()];
     else return "none";
 }
 
@@ -127,7 +135,7 @@ function calcContrastRatio(color1, color2) {
     var lum1 = calcLuminance(hexToRgb(colorNameToHex(color1)));
     var lum2 = calcLuminance(hexToRgb(colorNameToHex(color2)));
 
-    return Math.round((lum1 >= lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05)) * 100) / 100;
+    return (lum1 >= lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05)).toFixed(2);
 }
 
 function init() {
@@ -149,8 +157,13 @@ document.getElementById('backgroundInput').addEventListener('input', function(){
     document.getElementById('contrastSlider1').value = 0;
 });
 
-document.getElementById('contrastSlider2').addEventListener('input', function(){
+document.getElementById('textInput').addEventListener('input', function(){
     document.getElementById('contrastSlider2').value = 0;
+});
+
+document.getElementById('complianceButton').addEventListener('input', function(){
+    makeCompliant(colorNameToHex(document.getElementById('backgroundInput').value),
+        colorNameToHex(document.getElementById('textInput').value));
 });
 
 document.getElementById('mainDiv').addEventListener('input', function(){
