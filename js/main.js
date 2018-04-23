@@ -11,19 +11,54 @@ function translate(value, leftMin, leftMax, rightMin, rightMax) {
     return rightMin + valueScaled * rightSpan;
 }
 
-function wcagCompliant(ratio, level, size) {
+function wcagConformant(ratio, level, size) {
     if(ratio >= 4.5 && ((level === "AA" && size === "normal") || (level === "AAA" && size === "large"))) return ["Pass","green"];
     else if(ratio >= 7 && level === "AAA" && size === "normal") return ["Pass","green"];
     else if(ratio >= 3 &&level === "AA" && size === "large") return ["Pass","green"];
     else return ["Fail","red"];
 }
 
-function makeCompliant(color1, color2) {
-    while(calcContrastRatio(contrastRatio(color1, color2) < 4.5)) {
-        lightnessFactor1 -= 0.01;
-        console.log(lightnessFactor1);
-        makeCompliant(color1, color2);
+function conformance(hexcolor1, hexcolor2) {
+    var rgbcolor1 = hexToRgb(hexcolor1);
+    var rgbcolor2 = hexToRgb(hexcolor2);
+    var lum1 = calcLuminance(rgbcolor1);
+    var lum2 = calcLuminance(rgbcolor2);
+    var ratio = lum1 >= lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05);
+
+    while(ratio <= 4.5) {
+        rgbcolor1 = rgbToHex(rgbcolor1);
+        if(calcContrastRatio(hexcolor2, '#FFFFFF') < calcContrastRatio(hexcolor2, '#000000')) {
+            if(rgbcolor1 !== shadeColor(rgbcolor1, -1/127)) {
+                rgbcolor1 = shadeColor(rgbcolor1, -1/127);
+            }
+            else if(rgbcolor1 !== shadeColor(rgbcolor1, -1/63)) {
+                rgbcolor1 = shadeColor(rgbcolor1, -1/63);
+            }
+            else {
+                alert("Oh no! Something went wrong.");
+            }
+        }
+        else if(calcContrastRatio(hexcolor2, '#FFFFFF') > calcContrastRatio(hexcolor2, '#000000')) {
+            if(rgbcolor1 !== shadeColor(rgbcolor1, 1/127)) {
+                rgbcolor1 = shadeColor(rgbcolor1, 1/127);
+            }
+            else if(rgbcolor1 !== shadeColor(rgbcolor1, 1/63)) {
+                rgbcolor1 = shadeColor(rgbcolor1, 1/63);
+            }
+            else {
+                alert("Oh no! Something went wrong.");
+            }
+        }
+        else {
+            alert("Oh no! Something went wrong.");
+        }
+        rgbcolor1 = hexToRgb(rgbcolor1);
+        lum1 = calcLuminance(rgbcolor1);
+        console.log(lum1);
+        ratio = lum1 >= lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05);
+        console.log("Ratio: " + ratio + ", Color1: " + rgbToHex(rgbcolor1) + ", Color2: " + rgbToHex(rgbcolor2));
     }
+    return rgbToHex(rgbcolor1);
 }
 
 function shadeColor(color, percent) {
@@ -124,8 +159,8 @@ function hexToRgb(hex) {
 
 function calcLuminance(rgb) {
     var components = [  parseInt(rgb.substring(0, rgb.indexOf(","))) / 255,
-                        parseInt(rgb.substring(rgb.indexOf(",")+1, rgb.lastIndexOf(","))) / 255,
-                        parseInt(rgb.substring(rgb.lastIndexOf(",")+1, rgb.length)) / 255];
+        parseInt(rgb.substring(rgb.indexOf(",")+1, rgb.lastIndexOf(","))) / 255,
+        parseInt(rgb.substring(rgb.lastIndexOf(",")+1, rgb.length)) / 255];
     for(var i = 0; i < components.length; i++)
         components[i] = components[i] < 0.03928 ? components[i] / 12.92 : Math.pow((components[i] + 0.055) / 1.055, 2.4);
     return 0.2126 * components[0] + 0.7152 * components[1] + 0.0722 * components[2];
@@ -136,6 +171,54 @@ function calcContrastRatio(color1, color2) {
     var lum2 = calcLuminance(hexToRgb(colorNameToHex(color2)));
 
     return (lum1 >= lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05)).toFixed(2);
+}
+
+function copyColorToClipboard() {
+    /* Get the text field */
+    var copyText = document.getElementById("backgroundInput");
+
+    /* Select the text field */
+    copyText.select();
+
+    /* Copy the text inside the text field */
+    document.execCommand("Copy");
+
+    /* Alert the copied text */
+    alert("Copied color: " + copyText.value);
+}
+
+function updateListeners() {
+    document.getElementById('textbg1').style.backgroundColor = color1;
+    document.getElementById('textbg1').style.color = color2;
+    document.getElementById('textbg3').style.backgroundColor = color1;
+    document.getElementById('textbg3').style.color = color2;
+    document.getElementById('textbg2').style.backgroundColor = color2;
+    document.getElementById('textbg2').style.color = color1;
+    document.getElementById('textbg4').style.backgroundColor = color2;
+    document.getElementById('textbg4').style.color = color1;
+
+    document.getElementById('luminance1').innerHTML = calcLuminance(hexToRgb(colorNameToHex(color1))).toFixed(4);
+    document.getElementById('luminance2').innerHTML = calcLuminance(hexToRgb(colorNameToHex(color2))).toFixed(4);
+
+    document.getElementById('name1').innerHTML = hexToColorName(color1);
+    document.getElementById('name2').innerHTML = hexToColorName(color2);
+
+    document.getElementById('hex1').innerHTML = colorNameToHex(color1);
+    document.getElementById('hex2').innerHTML = colorNameToHex(color2);
+
+    document.getElementById('rgb1').innerHTML = hexToRgb(colorNameToHex(color1));
+    document.getElementById('rgb2').innerHTML = hexToRgb(colorNameToHex(color2));
+
+    document.getElementById('contrastRatio').innerHTML = "Contrast ratio: " + contrastRatio;
+
+    document.getElementById('largeAA').innerHTML = wcagConformant(contrastRatio, "AA", "large")[0];
+    document.getElementById('largeAA').style.backgroundColor = wcagConformant(contrastRatio, "AA", "large")[1];
+    document.getElementById('largeAAA').innerHTML = wcagConformant(contrastRatio, "AAA", "large")[0];
+    document.getElementById('largeAAA').style.backgroundColor = wcagConformant(contrastRatio, "AAA", "large")[1];
+    document.getElementById('normalAA').innerHTML = wcagConformant(contrastRatio, "AA", "normal")[0];
+    document.getElementById('normalAA').style.backgroundColor = wcagConformant(contrastRatio, "AA", "normal")[1];
+    document.getElementById('normalAAA').innerHTML = wcagConformant(contrastRatio, "AAA", "normal")[0];
+    document.getElementById('normalAAA').style.backgroundColor = wcagConformant(contrastRatio, "AAA", "normal")[1];
 }
 
 function init() {
@@ -161,44 +244,20 @@ document.getElementById('textInput').addEventListener('input', function(){
     document.getElementById('contrastSlider2').value = 0;
 });
 
-document.getElementById('complianceButton').addEventListener('input', function(){
-    makeCompliant(colorNameToHex(document.getElementById('backgroundInput').value),
+document.getElementById('conformanceButton').addEventListener('click', function(){
+    document.getElementById('contrastSlider1').value = 0;
+    document.getElementById('backgroundInput').value = conformance(colorNameToHex(document.getElementById('backgroundInput').value),
         colorNameToHex(document.getElementById('textInput').value));
+    color1 = conformance(colorNameToHex(document.getElementById('backgroundInput').value),
+        colorNameToHex(document.getElementById('textInput').value));
+    contrastRatio = calcContrastRatio(color1, color2);
+    updateListeners();
+    copyColorToClipboard();
 });
 
 document.getElementById('mainDiv').addEventListener('input', function(){
     color1 = shadeColor(colorNameToHex(document.getElementById('backgroundInput').value), lightnessFactor1);
     color2 = shadeColor(colorNameToHex(document.getElementById('textInput').value), lightnessFactor2);
     contrastRatio = calcContrastRatio(color1, color2);
-    document.getElementById('textbg1').style.backgroundColor = color1;
-    document.getElementById('textbg1').style.color = color2;
-    document.getElementById('textbg3').style.backgroundColor = color1;
-    document.getElementById('textbg3').style.color = color2;
-    document.getElementById('textbg2').style.backgroundColor = color2;
-    document.getElementById('textbg2').style.color = color1;
-    document.getElementById('textbg4').style.backgroundColor = color2;
-    document.getElementById('textbg4').style.color = color1;
-
-    document.getElementById('luminance1').innerHTML = calcLuminance(hexToRgb(colorNameToHex(color1))).toFixed(4);
-    document.getElementById('luminance2').innerHTML = calcLuminance(hexToRgb(colorNameToHex(color2))).toFixed(4);
-
-    document.getElementById('name1').innerHTML = hexToColorName(color1);
-    document.getElementById('name2').innerHTML = hexToColorName(color2);
-
-    document.getElementById('hex1').innerHTML = colorNameToHex(color1);
-    document.getElementById('hex2').innerHTML = colorNameToHex(color2);
-
-    document.getElementById('rgb1').innerHTML = hexToRgb(colorNameToHex(color1));
-    document.getElementById('rgb2').innerHTML = hexToRgb(colorNameToHex(color2));
-
-    document.getElementById('contrastRatio').innerHTML = "Contrast ratio: " + contrastRatio;
-
-    document.getElementById('largeAA').innerHTML = wcagCompliant(contrastRatio, "AA", "large")[0];
-    document.getElementById('largeAA').style.backgroundColor = wcagCompliant(contrastRatio, "AA", "large")[1];
-    document.getElementById('largeAAA').innerHTML = wcagCompliant(contrastRatio, "AAA", "large")[0];
-    document.getElementById('largeAAA').style.backgroundColor = wcagCompliant(contrastRatio, "AAA", "large")[1];
-    document.getElementById('normalAA').innerHTML = wcagCompliant(contrastRatio, "AA", "normal")[0];
-    document.getElementById('normalAA').style.backgroundColor = wcagCompliant(contrastRatio, "AA", "normal")[1];
-    document.getElementById('normalAAA').innerHTML = wcagCompliant(contrastRatio, "AAA", "normal")[0];
-    document.getElementById('normalAAA').style.backgroundColor = wcagCompliant(contrastRatio, "AAA", "normal")[1];
+    updateListeners();
 });
