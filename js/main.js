@@ -184,7 +184,7 @@ function copyColorToClipboard() {
     document.execCommand("Copy");
 
     /* Alert the copied text */
-    alert("Copied color: " + copyText.value);
+    //alert("Copied color: " + copyText.value);
 }
 
 function updateListeners() {
