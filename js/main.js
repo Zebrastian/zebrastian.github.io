@@ -2,7 +2,7 @@ var color1;
 var color2;
 var lightnessFactor1;
 var lightnessFactor2;
-var contrastRatio;
+var contrastRatio = 1;
 
 function translate(value, leftMin, leftMax, rightMin, rightMax) {
     var leftSpan = leftMax - leftMin;
@@ -174,17 +174,9 @@ function calcContrastRatio(color1, color2) {
 }
 
 function copyColorToClipboard() {
-    /* Get the text field */
     var copyText = document.getElementById("backgroundInput");
-
-    /* Select the text field */
     copyText.select();
-
-    /* Copy the text inside the text field */
     document.execCommand("Copy");
-
-    /* Alert the copied text */
-    //alert("Copied color: " + copyText.value);
 }
 
 function updateListeners() {
@@ -192,10 +184,6 @@ function updateListeners() {
     document.getElementById('textbg1').style.color = color2;
     document.getElementById('textbg3').style.backgroundColor = color1;
     document.getElementById('textbg3').style.color = color2;
-    document.getElementById('textbg2').style.backgroundColor = color2;
-    document.getElementById('textbg2').style.color = color1;
-    document.getElementById('textbg4').style.backgroundColor = color2;
-    document.getElementById('textbg4').style.color = color1;
 
     document.getElementById('luminance1').innerHTML = calcLuminance(hexToRgb(colorNameToHex(color1))).toFixed(4);
     document.getElementById('luminance2').innerHTML = calcLuminance(hexToRgb(colorNameToHex(color2))).toFixed(4);
