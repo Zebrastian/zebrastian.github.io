@@ -18,6 +18,31 @@ function wcagConformant(ratio, level, size) {
     else return ["Fail","red"];
 }
 
+function tryContrastChange(color, value) {
+    if(color !== shadeColor(color, value * 1/127)) {
+        color = shadeColor(color, value * 1/127);
+    }
+    else if(color !== shadeColor(color, value * 1/63)) {
+        color = shadeColor(color, value * 1/63);
+    }
+    else if(color !== shadeColor(color, value * 1/31)) {
+        color = shadeColor(color, value * 1/31);
+    }
+    else if(color !== shadeColor(color, value * 1/15)) {
+        color = shadeColor(color, value * 1/15);
+    }
+    else if(color !== shadeColor(color, value * 1/7)) {
+        color = shadeColor(color, value * 1/7);
+    }
+    else if(color !== shadeColor(color, value * 1/3)) {
+        color = shadeColor(color, value * 1/3);
+    }
+    else {
+        alert("Oh no! Something went wrong.");
+    }
+    return color;
+}
+
 function conformance(hexcolor1, hexcolor2) {
     var rgbcolor1 = hexToRgb(hexcolor1);
     var rgbcolor2 = hexToRgb(hexcolor2);
@@ -28,29 +53,14 @@ function conformance(hexcolor1, hexcolor2) {
     while(ratio <= 4.5) {
         rgbcolor1 = rgbToHex(rgbcolor1);
         if(calcContrastRatio(hexcolor2, '#FFFFFF') < calcContrastRatio(hexcolor2, '#000000')) {
-            if(rgbcolor1 !== shadeColor(rgbcolor1, -1/127)) {
-                rgbcolor1 = shadeColor(rgbcolor1, -1/127);
-            }
-            else if(rgbcolor1 !== shadeColor(rgbcolor1, -1/63)) {
-                rgbcolor1 = shadeColor(rgbcolor1, -1/63);
-            }
-            else {
-                alert("Oh no! Something went wrong.");
-            }
+            rgbcolor1 = tryContrastChange(rgbcolor1, -1);
         }
         else if(calcContrastRatio(hexcolor2, '#FFFFFF') > calcContrastRatio(hexcolor2, '#000000')) {
-            if(rgbcolor1 !== shadeColor(rgbcolor1, 1/127)) {
-                rgbcolor1 = shadeColor(rgbcolor1, 1/127);
-            }
-            else if(rgbcolor1 !== shadeColor(rgbcolor1, 1/63)) {
-                rgbcolor1 = shadeColor(rgbcolor1, 1/63);
-            }
-            else {
-                alert("Oh no! Something went wrong.");
-            }
+            rgbcolor1 = tryContrastChange(rgbcolor1, 1);
         }
         else {
-            alert("Oh no! Something went wrong.");
+            alert("Oh no! Something went wrong 3.");
+            break;
         }
         rgbcolor1 = hexToRgb(rgbcolor1);
         lum1 = calcLuminance(rgbcolor1);
